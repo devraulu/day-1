@@ -1,24 +1,10 @@
-use std::{
-    fs::File,
-    io::{BufRead, BufReader, Error},
-};
+use anyhow::{Context, Result};
 
-fn main() -> Result<(), Error> {
-    let f = File::open("input.txt")?;
-    let reader = BufReader::new(f);
+use a::{parse_input, read_input};
 
-    let (mut first, mut second): (Vec<_>, Vec<_>) = reader
-        .lines()
-        .map_while(Result::ok)
-        .map(|line| {
-            let mut cols = line
-                .split_whitespace()
-                .filter_map(|num| num.parse::<i32>().ok());
-            let first = cols.next().unwrap_or_default();
-            let second = cols.next().unwrap_or_default();
-            (first, second)
-        })
-        .unzip();
+fn main() -> Result<()> {
+    let (mut first, mut second): (Vec<_>, Vec<_>) =
+        read_input().with_context(|| "Error parsing input")?;
 
     first.sort_unstable();
     second.sort_unstable();
